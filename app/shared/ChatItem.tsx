@@ -7,6 +7,7 @@ type ChatItemProps = {
 };
 
 export default function ChatItem({ chat }: ChatItemProps) {
+  
   return (
     <View
       style={[

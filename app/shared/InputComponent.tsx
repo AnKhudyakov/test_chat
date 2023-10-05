@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import {
   StyleSheet,
@@ -10,14 +9,12 @@ import {
 
 interface InputComponentProps {
   changeTextHandler: (text: string) => void;
-  onSubmitEditing: () => void;
   value: string;
   sendMessage: () => void;
 }
 
 const InputComponent: React.FC<InputComponentProps> = ({
   changeTextHandler,
-  onSubmitEditing,
   value,
   sendMessage,
 }) => {
@@ -42,13 +39,6 @@ const InputComponent: React.FC<InputComponentProps> = ({
       </TouchableHighlight>
     </View>
   );
-};
-
-InputComponent.propTypes = {
-  changeTextHandler: PropTypes.func.isRequired,
-  onSubmitEditing: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-  sendMessage: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({

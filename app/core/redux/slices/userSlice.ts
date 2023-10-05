@@ -1,14 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Chat } from '../../types';
 import type { RootState } from '../index';
-import { Socket } from 'socket.io-client';
 
 const initialState = {
   name: '',
   chatList: [] as Chat[],
-  socket: null as Socket | null,
-  //isLoading: false as boolean,
+  isShowModalExit : false
 };
 
 const slice = createSlice({
@@ -21,24 +19,21 @@ const slice = createSlice({
     setName: (state, { payload: name }: PayloadAction<string>) => {
       state.name = name;
     },
-    // setSocket: (state, action: PayloadAction<Socket|null>) => {
-    //   state.socket = action.payload ? { ...action.payload } : null;;
-    // },
-    // setLoading: (state, { payload: isLoading }: PayloadAction<boolean>) => {
-    //   state.isLoading = isLoading;
-    // },
+    setIsShowModalExit: (state, { payload: isShowModalExit }: PayloadAction<boolean>) => {
+      state.isShowModalExit = isShowModalExit;
+    },
   },
 });
 
 export const {
   setChatsList,
- // setSocket,
   setName,
-  //setLoading,
+  setIsShowModalExit
 } = slice.actions;
 
 export const selectChatList = (state: RootState) => state.user.chatList;
 export const selectName = (state: RootState) => state.user.name;
-export const selectSocket = (state: RootState) => state.user.socket;
+export const selectIsShowModalExit = (state: RootState) => state.user.isShowModalExit;
+
 
 export default slice.reducer;

@@ -8,7 +8,14 @@ import {
 } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 import { useAppSelector, useAppDispatch } from '../core/redux/hooks';
-import { selectName, setName } from '../core/redux/slices/userSlice';
+import {
+  selectIsShowModalExit,
+  selectName,
+  setName,
+} from '../core/redux/slices/userSlice';
+import Modal from '../shared/Modal';
+import ExitConfirm from '../shared/ExitConfirm';
+import { getSocket } from '../core/services/socketApi';
 
 interface LoginScreenProps {
   navigation: NavigationScreenProp<any, any>;
@@ -18,10 +25,11 @@ function LoginScreen({ navigation }: LoginScreenProps) {
   const name = useAppSelector(selectName);
   const dispatch = useAppDispatch();
   const [error, setError] = useState<boolean>(false);
-
+  const isShowModalExit = useAppSelector(selectIsShowModalExit);
+  
   const onSubmitFuction = () => {
     if (name) {
-      navigation.navigate('MainScreen', { name });
+      navigation.navigate('MainScreen');
     } else {
       setError(true);
     }
@@ -31,10 +39,7 @@ function LoginScreen({ navigation }: LoginScreenProps) {
     <View style={styles.loginWrapper}>
       <Text style={styles.mainTitle}>Login</Text>
       <TextInput
-        style={[
-          styles.textInput,
-          { borderColor: error ? 'red' : '#000' },
-        ]}
+        style={[styles.textInput, { borderColor: error ? 'red' : '#000' }]}
         onChangeText={(text) => dispatch(setName(text))}
         onSubmitEditing={onSubmitFuction}
         value={name}
@@ -48,6 +53,9 @@ function LoginScreen({ navigation }: LoginScreenProps) {
       >
         <Text>Login</Text>
       </TouchableHighlight>
+      {isShowModalExit && <Modal>
+        <ExitConfirm/>
+        </Modal>}
     </View>
   );
 }

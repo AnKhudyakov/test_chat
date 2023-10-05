@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
-import { Socket, io } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
+import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
+import { selectChatList, selectIsShowModalExit, selectName } from '../core/redux/slices/userSlice';
+import { connectSocket, getSocket } from '../core/services/socketApi';
 import { Chat } from '../core/types';
 import ChatItem from '../shared/ChatItem';
-import { useAppSelector, useAppDispatch } from '../core/redux/hooks';
-import {
-  selectChatList,
-  selectName,
-  setChatsList,
-} from '../core/redux/slices/userSlice';
 import Modal from '../shared/Modal';
-import { connectSocket } from '../core/services/socketApi';
+import CreatedChat from '../shared/CreatedChat';
+import ExitConfirm from '../shared/ExitConfirm';
 
 interface MainScreenProps {
   navigation: NavigationScreenProp<any, any>;
@@ -26,17 +18,47 @@ interface MainScreenProps {
 export default function MainScreen({ navigation }: MainScreenProps) {
   const name = useAppSelector(selectName);
   const dispatch = useAppDispatch();
+  // const isShowModalExit = useAppSelector(selectIsShowModalExit);
   const chatList = useAppSelector(selectChatList);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
-
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   useEffect(() => {
-    connectSocket(setSocket, name,dispatch );
+    connectSocket(name, dispatch);
+    setSocket(getSocket())
   }, []);
 
+  useEffect(() => {
+    setSelectedChat(
+      chatList.find((chat) => chat._id === selectedChat?._id) || null
+    );
+  }, [chatList]);
+
+  useEffect(() => {
+    if (selectedChat) {
+      navigation.navigate('ChatScreen', { chat: selectedChat, socket });
+    }
+  }, [selectedChat]);
+
   const selectChat = (chat: Chat) => {
-    navigation.navigate('ChatScreen', { chat });
+    setSelectedChat(chat);
   };
+
+  if (!name) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#295061',
+          justifyContent: 'center',
+        }}
+      >
+        <Text style={{ color: 'white', fontSize: 24, textAlign: 'center' }}>
+          Please login to see chat list
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#295061', paddingTop: 20 }}>
@@ -57,7 +79,9 @@ export default function MainScreen({ navigation }: MainScreenProps) {
           keyExtractor={(item) => item._id}
         />
         {visible ? (
-          <Modal setVisible={setVisible} socket={socket} />
+          <Modal>
+            <CreatedChat setVisible={setVisible} socket={socket} />
+          </Modal>
         ) : (
           <Pressable
             onPress={() => setVisible(true)}
@@ -73,6 +97,9 @@ export default function MainScreen({ navigation }: MainScreenProps) {
           </Pressable>
         )}
       </View>
+       {/* {isShowModalExit && <Modal>
+        <ExitConfirm/>
+        </Modal>} */}
     </View>
   );
 }
