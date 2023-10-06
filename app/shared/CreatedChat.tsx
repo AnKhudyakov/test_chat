@@ -3,24 +3,26 @@ import React, { Dispatch, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Socket } from 'socket.io-client';
 import { selectName } from '../core/redux/slices/userSlice';
-import { useAppSelector } from '../core/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
+import { getSocket } from '../core/services/socketApi';
+import { setSelectedChat } from '../core/redux/slices/chatSlice';
 
 type CreatedChatCardProps = {
   setVisible: Dispatch<React.SetStateAction<boolean>>;
-  socket: Socket | null;
 };
 
-function CreatedChat({ setVisible, socket }: CreatedChatCardProps) {
+function CreatedChat({ setVisible }: CreatedChatCardProps) {
+  const dispatch = useAppDispatch();
   const userName = useAppSelector(selectName);
   const [chatName, setChatName] = useState('');
   const [focus, setFocus] = useState(false);
   const [error, setError] = useState<boolean>(false);
-
   const closeModal = () => setVisible(false);
 
   const handleCreateRoom = () => {
     if (chatName) {
-      socket?.emit('createChat', { name: chatName, userName });
+      dispatch(setSelectedChat(null));
+      getSocket()?.emit('createChat', { name: chatName, userName });
       closeModal();
     } else {
       setError(true);

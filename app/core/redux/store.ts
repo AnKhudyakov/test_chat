@@ -1,16 +1,17 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice';
-//import { projectApi } from './services/project';
+import chatReducer from './slices/chatSlice';
+import messageReducer from './slices/messageSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
-  //[socketApi.reducerPath]: socketApi.reducer,
+  chat: chatReducer,
+  message: messageReducer
+
 });
 
 export const store = configureStore({
   reducer: rootReducer,
- // middleware: (getDefaultMiddleware) =>
-  //  getDefaultMiddleware().concat(socketApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -1,39 +1,61 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useAppSelector } from '../core/redux/hooks';
+
 import { Chat } from '../core/types';
+import DeleteConfirm from './DeleteConfirm';
+import { selectIsShowModalDelete } from '../core/redux/slices/chatSlice';
 
 type ChatItemProps = {
   chat: Chat;
+  selectedChat: Chat | null;
 };
 
-export default function ChatItem({ chat }: ChatItemProps) {
-  
+export default function ChatItem({ chat, selectedChat }: ChatItemProps) {
+  const isShowModal = useAppSelector(selectIsShowModalDelete);
+
+  if (isShowModal && selectedChat?._id === chat._id) {
+    return (
+      <View style={styles.modal}>
+        <DeleteConfirm id={chat._id} variant='chat'/>
+      </View>
+    );
+  }
+
   return (
     <View
-      style={[
-        {
-          display: 'flex',
-          alignItems: 'flex-start',
-          width: '100%',
-          gap: 15,
-        },
-      ]}
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        width: '100%',
+        marginTop: 15,
+      }}
     >
       <View style={[styles.listItemContainer, { flexDirection: 'column' }]}>
         <Text style={styles.author}>Created by {chat.author.name}</Text>
         <Text style={styles.listItem}>{chat.name}</Text>
-        <Text style={styles.date}>{chat.createdAt.slice(0,10)}{" "}{chat.createdAt.slice(11,19)}</Text>
+        <Text style={styles.date}>
+          {chat.createdAt.slice(0, 10)} {chat.createdAt.slice(11, 19)}
+        </Text>
       </View>
-      <View style={styles.marginBottom} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    minHeight: 80,
+    backgroundColor: '#cccccc',
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginTop: 15,
+    borderRadius: 10,
+  },
   listItem: {
     width: 'auto',
     maxWidth: '80%',
-    padding: 20,
+    padding: 10,
     borderRadius: 5,
     fontSize: 14,
   },
@@ -42,12 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   author: {
-    //opacity: 0.6,
     fontSize: 10,
-  },
-  marginBottom: {
-    height: 5,
-    backgroundColor: 'transparent',
   },
   listItemContainer: {
     width: '100%',

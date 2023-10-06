@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface InputComponentProps {
   changeTextHandler: (text: string) => void;
@@ -19,7 +14,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
   sendMessage,
 }) => {
   return (
-    <View style={{ flexDirection: 'row', width:"100%" }}>
+    <View style={styles.container}>
       <TextInput
         style={styles.textInput}
         onChangeText={changeTextHandler}
@@ -30,18 +25,20 @@ const InputComponent: React.FC<InputComponentProps> = ({
         returnKeyLabel="done"
         underlineColorAndroid="transparent"
       />
-      <TouchableHighlight
-        style={styles.inputButton}
-        underlayColor="#fff"
-        onPress={sendMessage}
-      >
-        <Text>Send</Text>
-      </TouchableHighlight>
+      <Pressable style={styles.inputButton} onPress={sendMessage}>
+        <Icon name="paper-plane" color={'black'} size={20} />
+      </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    width: '100%',
+    padding: 5,
+    gap: 10,
+  },
   textInput: {
     height: 50,
     paddingRight: 10,
@@ -57,12 +54,13 @@ const styles = StyleSheet.create({
   inputButton: {
     display: 'flex',
     height: 50,
+    width: 50,
     justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 10,
     alignSelf: 'center',
     paddingLeft: 5,
     paddingRight: 5,
-    marginLeft: 10,
     backgroundColor: '#fff',
     elevation: 1,
   },

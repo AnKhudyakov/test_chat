@@ -1,47 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 import { Socket } from 'socket.io-client';
 import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
-import { selectChatList, selectIsShowModalExit, selectName } from '../core/redux/slices/userSlice';
+import { selectName } from '../core/redux/slices/userSlice';
 import { connectSocket, getSocket } from '../core/services/socketApi';
 import { Chat } from '../core/types';
 import ChatItem from '../shared/ChatItem';
 import Modal from '../shared/Modal';
 import CreatedChat from '../shared/CreatedChat';
-import ExitConfirm from '../shared/ExitConfirm';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { selectChatList, selectFilteredChatList, selectIsShowModalDelete, selectSelectedChat, setIsShowModalDelete, setSelectedChat } from '../core/redux/slices/chatSlice';
 
 interface MainScreenProps {
   navigation: NavigationScreenProp<any, any>;
 }
 
 export default function MainScreen({ navigation }: MainScreenProps) {
-  const name = useAppSelector(selectName);
   const dispatch = useAppDispatch();
-  // const isShowModalExit = useAppSelector(selectIsShowModalExit);
+  const name = useAppSelector(selectName);
   const chatList = useAppSelector(selectChatList);
+  const selectedChat = useAppSelector(selectSelectedChat);
+  const isShowModal = useAppSelector(selectIsShowModalDelete);
+
   const [socket, setSocket] = useState<Socket | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const filteredChatList = useAppSelector(selectFilteredChatList);
   useEffect(() => {
     connectSocket(name, dispatch);
-    setSocket(getSocket())
+    setSocket(getSocket());
   }, []);
 
   useEffect(() => {
-    setSelectedChat(
-      chatList.find((chat) => chat._id === selectedChat?._id) || null
+    dispatch(
+      setSelectedChat(
+        chatList.find((chat) => chat._id === selectedChat?._id) || null
+      )
     );
   }, [chatList]);
 
   useEffect(() => {
-    if (selectedChat) {
-      navigation.navigate('ChatScreen', { chat: selectedChat, socket });
+    if (selectedChat && !isShowModal) {
+      navigation.navigate('Chat', { chat: selectedChat, socket });
     }
   }, [selectedChat]);
 
   const selectChat = (chat: Chat) => {
-    setSelectedChat(chat);
+    dispatch(setSelectedChat(chat));
+  };
+
+  const onSwipe = (gestureName: string, item: Chat) => {
+    if (gestureName === 'SWIPE_RIGHT') {
+      dispatch(setIsShowModalDelete(true));
+      selectChat(item);
+    }
   };
 
   if (!name) {
@@ -70,63 +90,67 @@ export default function MainScreen({ navigation }: MainScreenProps) {
         }}
       >
         <FlatList
-          data={chatList}
+          data={filteredChatList}
           renderItem={({ item }) => (
-            <Pressable onPress={() => selectChat(item)}>
-              <ChatItem chat={item} />
-            </Pressable>
+            <GestureRecognizer
+              onSwipe={(direction) => onSwipe(direction, item)}
+              config={{
+                velocityThreshold: 0.3,
+                directionalOffsetThreshold: 80,
+              }}
+              style={{ flex: 1 }}
+            >
+              <Pressable
+                onPress={() => selectChat(item)}
+                onLongPress={() => {
+                  if (item.author.name === name) {
+                    dispatch(setIsShowModalDelete(true));
+                    selectChat(item);
+                  } else {
+                    Alert.alert('You can only delete your chat!');
+                  }
+                }}
+              >
+                <ChatItem chat={item} selectedChat={selectedChat} />
+              </Pressable>
+            </GestureRecognizer>
           )}
           keyExtractor={(item) => item._id}
         />
         {visible ? (
           <Modal>
-            <CreatedChat setVisible={setVisible} socket={socket} />
+            <CreatedChat setVisible={setVisible} />
           </Modal>
         ) : (
-          <Pressable
-            onPress={() => setVisible(true)}
-            style={{ position: 'absolute', bottom: 15, right: 20, width: 50 }}
-          >
+          <Pressable onPress={() => setVisible(true)} style={styles.container}>
             <View style={styles.buttonAdd}>
-              <Text
-                style={{ color: 'white', fontSize: 24, textAlign: 'center' }}
+              {/* <Text
+                style={{ fontSize: 24, textAlign: 'center' }}
               >
                 +
-              </Text>
+              </Text> */}
+              <Icon name="plus" color={'black'} size={26} />
             </View>
           </Pressable>
         )}
       </View>
-       {/* {isShowModalExit && <Modal>
-        <ExitConfirm/>
-        </Modal>} */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  imageStyles: {
-    width: 200,
-    height: 200,
-    borderRadius: 35,
-    marginLeft: 10,
-    marginRight: 10,
-  },
-  buttonAbout: {
-    alignSelf: 'flex-end',
-    width: '20%',
-    backgroundColor: '#61dbfc',
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingLeft: 10,
-    paddingBottom: 10,
-    marginRight: 10,
-    marginTop: 10,
-    borderRadius: 5,
+  container: {
+    position: 'absolute',
+    bottom: 15,
+    right: 20,
+    width: 46,
   },
   buttonAdd: {
-    width: '100%',
-    backgroundColor: '#38758f',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 'auto',
+    backgroundColor: '#f5fcff',
     padding: 10,
     borderRadius: 50,
   },

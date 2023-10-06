@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import type { AppDispatch } from '../redux/index';
-import { setChatsList } from '../redux/slices/userSlice';
 import { Chat } from '../types';
+import { setChatsList } from '../redux/slices/chatSlice';
 
 let socket: Socket | null = null;
 

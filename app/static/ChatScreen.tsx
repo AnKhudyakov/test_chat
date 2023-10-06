@@ -1,12 +1,21 @@
 import { RouteProp } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { Socket } from 'socket.io-client';
-import { useAppSelector } from '../core/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
 import { selectName } from '../core/redux/slices/userSlice';
 import { Chat, Message } from '../core/types';
-import FlatListComponent from '../shared/FlatListComponent';
+import MessageItem from '../shared/MessageItem';
 import InputComponent from '../shared/InputComponent';
+import {
+  selectDeleteMessageModal,
+  selectEditMessageModal,
+  selectSelectedMessage,
+  setIsShowEditMessage,
+  setSelectedMessage,
+} from '../core/redux/slices/messageSlice';
+import Modal from '../shared/Modal';
+import DeleteConfirm from '../shared/DeleteConfirm';
 
 type RootStackParamList = {
   MainScreen: undefined;
@@ -20,17 +29,19 @@ export interface ChatScreenProps {
 }
 
 function ChatScreen({ route }: ChatScreenProps) {
+  const dispatch = useAppDispatch();
   const { chat, socket } = route.params;
-
-  
+  const selectedMessage = useAppSelector(selectSelectedMessage);
+  const editMessageModal = useAppSelector(selectEditMessageModal);
   const name = useAppSelector(selectName);
+  const deleteMessageModal = useAppSelector(selectDeleteMessageModal);
   const [messages, setMessages] = useState<Message[]>(chat.messages);
   const [text, setText] = useState('');
 
   const flatListRef = useRef<FlatList | null>(null);
 
   useEffect(() => {
-    if (chat && chat.messages.length) setMessages(chat.messages);
+    if (chat) setMessages(chat.messages);
   }, [chat]);
 
   const changeTextHandler = (newText: string) => {
@@ -42,12 +53,29 @@ function ChatScreen({ route }: ChatScreenProps) {
       let messageData = {
         text,
         name,
-        chatId: chat._id
+        chatId: chat._id,
       };
       socket.emit('message', messageData);
       setText('');
     }
   };
+
+  const updateMessage = () => {
+    if (text.trim().length) {
+      let messageData = {
+        message: selectedMessage,
+        text,
+      };
+      socket.emit('updateMessage', messageData);
+      dispatch(setSelectedMessage(null));
+      dispatch(setIsShowEditMessage(false));
+      setText('');
+    }
+  };
+
+  useEffect(() => {
+    if (selectedMessage) setText(selectedMessage.text);
+  }, [editMessageModal]);
 
   return (
     <View style={styles.container}>
@@ -60,13 +88,27 @@ function ChatScreen({ route }: ChatScreenProps) {
           flatListRef.current?.scrollToEnd({ animated: true })
         }
         onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
-        renderItem={({ item }) => <FlatListComponent item={item} />}
+        renderItem={({ item }) => (
+          <Pressable
+            onLongPress={() => {
+              dispatch(setSelectedMessage(item));
+              dispatch(setIsShowEditMessage(true));
+            }}
+          >
+            <MessageItem item={item} />
+          </Pressable>
+        )}
       />
       <InputComponent
         changeTextHandler={changeTextHandler}
         value={text}
-        sendMessage={sendMessage}
+        sendMessage={editMessageModal ? updateMessage : sendMessage}
       />
+      {deleteMessageModal && (
+        <Modal>
+          <DeleteConfirm id={selectedMessage?._id} variant="message" />
+        </Modal>
+      )}
     </View>
   );
 }
