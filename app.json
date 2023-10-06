@@ -18,26 +18,18 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/9f8a1b07-b175-40ed-9fcf-d05b300cb9b7"
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.khandrew.chat"
+      "supportsTablet": true
     },
     "android": {
-      "package": "com.khandrew.chat"
     },
     "web": {
       "favicon": "./assets/icon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "9f8a1b07-b175-40ed-9fcf-d05b300cb9b7"
-      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
