@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "shuttlex",
-    "slug": "shuttlex",
+    "name": "Chat",
+    "slug": "chat",
+    "description": "This is simple chat app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,6 +11,10 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/9f8a1b07-b175-40ed-9fcf-d05b300cb9b7"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -25,6 +30,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9f8a1b07-b175-40ed-9fcf-d05b300cb9b7"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
