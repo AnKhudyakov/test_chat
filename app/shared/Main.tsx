@@ -10,6 +10,13 @@ import { selectName, setIsShowModalExit } from '../core/redux/slices/userSlice';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
+  selectChatList,
+  selectIsShowSearch,
+  setFilteredChatList,
+  setIsShowSearch,
+  setSelectedChat,
+} from '../core/redux/slices/chatSlice';
+import {
   selectIsShowEditMessage,
   selectSelectedMessage,
   setDeleteMessageModal,
@@ -20,7 +27,6 @@ import {
 import ChatScreen from '../static/ChatScreen';
 import LoginScreen from '../static/LoginScreen';
 import MainScreen from '../static/MainScreen';
-import { selectChatList, selectIsShowSearch, setFilteredChatList, setIsShowSearch, setSelectedChat } from '../core/redux/slices/chatSlice';
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();

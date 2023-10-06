@@ -1,12 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
-import { Socket } from 'socket.io-client';
 import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
-import { selectName } from '../core/redux/slices/userSlice';
-import { Chat, Message } from '../core/types';
-import MessageItem from '../shared/MessageItem';
-import InputComponent from '../shared/InputComponent';
 import {
   selectDeleteMessageModal,
   selectEditMessageModal,
@@ -14,12 +9,17 @@ import {
   setIsShowEditMessage,
   setSelectedMessage,
 } from '../core/redux/slices/messageSlice';
-import Modal from '../shared/Modal';
+import { selectName } from '../core/redux/slices/userSlice';
+import { getSocket } from '../core/services/socketApi';
+import { Chat, Message } from '../core/types';
 import DeleteConfirm from '../shared/DeleteConfirm';
+import InputComponent from '../shared/InputComponent';
+import MessageItem from '../shared/MessageItem';
+import Modal from '../shared/Modal';
 
 type RootStackParamList = {
   MainScreen: undefined;
-  ChatScreen: { chat: Chat; socket: Socket };
+  ChatScreen: { chat: Chat};
 };
 
 type ChatScreenRouteProp = RouteProp<RootStackParamList, 'ChatScreen'>;
@@ -30,19 +30,22 @@ export interface ChatScreenProps {
 
 function ChatScreen({ route }: ChatScreenProps) {
   const dispatch = useAppDispatch();
-  const { chat, socket } = route.params;
+  const { chat } = route.params;
   const selectedMessage = useAppSelector(selectSelectedMessage);
   const editMessageModal = useAppSelector(selectEditMessageModal);
   const name = useAppSelector(selectName);
   const deleteMessageModal = useAppSelector(selectDeleteMessageModal);
   const [messages, setMessages] = useState<Message[]>(chat.messages);
   const [text, setText] = useState('');
-
   const flatListRef = useRef<FlatList | null>(null);
 
   useEffect(() => {
     if (chat) setMessages(chat.messages);
   }, [chat]);
+
+  useEffect(() => {
+    if (selectedMessage) setText(selectedMessage.text);
+  }, [editMessageModal]);
 
   const changeTextHandler = (newText: string) => {
     setText(newText);
@@ -55,7 +58,7 @@ function ChatScreen({ route }: ChatScreenProps) {
         name,
         chatId: chat._id,
       };
-      socket.emit('message', messageData);
+      getSocket()?.emit('message', messageData);
       setText('');
     }
   };
@@ -66,16 +69,12 @@ function ChatScreen({ route }: ChatScreenProps) {
         message: selectedMessage,
         text,
       };
-      socket.emit('updateMessage', messageData);
+      getSocket()?.emit('updateMessage', messageData);
       dispatch(setSelectedMessage(null));
       dispatch(setIsShowEditMessage(false));
       setText('');
     }
   };
-
-  useEffect(() => {
-    if (selectedMessage) setText(selectedMessage.text);
-  }, [editMessageModal]);
 
   return (
     <View style={styles.container}>

@@ -52,9 +52,9 @@ export const selectSelectedMessage = (state: RootState) =>
   state.message.selectedMessage;
 export const selectIsShowEditMessage = (state: RootState) =>
   state.message.isShowEditMessage;
-  export const selectDeleteMessageModal = (state: RootState) =>
+export const selectDeleteMessageModal = (state: RootState) =>
   state.message.deleteMessageModal;
-  export const selectEditMessageModal = (state: RootState) =>
+export const selectEditMessageModal = (state: RootState) =>
   state.message.editMessageModal;
 
 export default slice.reducer;

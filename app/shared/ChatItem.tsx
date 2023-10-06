@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAppSelector } from '../core/redux/hooks';
 
+import { selectIsShowModalDelete } from '../core/redux/slices/chatSlice';
 import { Chat } from '../core/types';
 import DeleteConfirm from './DeleteConfirm';
-import { selectIsShowModalDelete } from '../core/redux/slices/chatSlice';
 
 type ChatItemProps = {
   chat: Chat;
@@ -17,7 +17,7 @@ export default function ChatItem({ chat, selectedChat }: ChatItemProps) {
   if (isShowModal && selectedChat?._id === chat._id) {
     return (
       <View style={styles.modal}>
-        <DeleteConfirm id={chat._id} variant='chat'/>
+        <DeleteConfirm id={chat._id} variant="chat" />
       </View>
     );
   }

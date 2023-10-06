@@ -5,15 +5,14 @@ import { setChatsList } from '../redux/slices/chatSlice';
 
 let socket: Socket | null = null;
 
-export const connectSocket = (
-  name: string,
-  dispatch: AppDispatch
-) => {
+export const connectSocket = (name: string, dispatch: AppDispatch) => {
   if (!socket) {
-    socket = io('http://localhost:4000', {
+    socket = io('https://ocket-chat-server.onrender.com', {
       transports: ['websocket'],
     });
     socket.on('connect', () => {
+      console.log('connect');
+
       socket?.emit('userJoined', name);
       socket?.on('getChats', (chats: Chat[]) => {
         dispatch(setChatsList(chats));
@@ -28,8 +27,7 @@ export const connectSocket = (
 
 export const getSocket = () => {
   if (!socket) {
-    console.log('Socket is disconnected');;
-    
+    console.log('Socket is disconnected');
   }
   return socket;
 };

@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { Chat } from '../../types';
 import type { RootState } from '../index';
 
 const initialState = {

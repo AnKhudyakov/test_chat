@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface InputComponentProps {
@@ -13,6 +13,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
   value,
   sendMessage,
 }) => {
+  
   return (
     <View style={styles.container}>
       <TextInput
@@ -34,7 +35,9 @@ const InputComponent: React.FC<InputComponentProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%',
     padding: 5,
     gap: 10,
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     borderColor: 'transparent',
-    width: '100%',
+    width: '80%',
     backgroundColor: '#fff',
     borderRadius: 10,
     elevation: 1,
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
   inputButton: {
     display: 'flex',
     height: 50,
-    width: 50,
+    width: '15%',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,

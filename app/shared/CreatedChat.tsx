@@ -1,11 +1,9 @@
-import { View, Text, TextInput, Pressable } from 'react-native';
 import React, { Dispatch, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { Socket } from 'socket.io-client';
-import { selectName } from '../core/redux/slices/userSlice';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
-import { getSocket } from '../core/services/socketApi';
 import { setSelectedChat } from '../core/redux/slices/chatSlice';
+import { selectName } from '../core/redux/slices/userSlice';
+import { getSocket } from '../core/services/socketApi';
 
 type CreatedChatCardProps = {
   setVisible: Dispatch<React.SetStateAction<boolean>>;
@@ -28,6 +26,7 @@ function CreatedChat({ setVisible }: CreatedChatCardProps) {
       setError(true);
     }
   };
+  
   return (
     <View>
       <Text style={styles.modalsubheading}>Enter Chat name</Text>

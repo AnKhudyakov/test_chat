@@ -7,15 +7,14 @@ import {
   View,
 } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
-import { useAppSelector, useAppDispatch } from '../core/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
 import {
   selectIsShowModalExit,
   selectName,
   setName,
 } from '../core/redux/slices/userSlice';
-import Modal from '../shared/Modal';
 import ExitConfirm from '../shared/ExitConfirm';
-import { getSocket } from '../core/services/socketApi';
+import Modal from '../shared/Modal';
 
 interface LoginScreenProps {
   navigation: NavigationScreenProp<any, any>;

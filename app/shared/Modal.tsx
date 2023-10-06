@@ -5,13 +5,11 @@ type ModalProps = {
   children: React.ReactNode;
 };
 
-const Modal = ({  children }: ModalProps) => {
+const Modal = ({ children }: ModalProps) => {
   
   return (
     <View style={styles.modalContainer}>
-      <View style={styles.modalWindow}>
-        {children}
-      </View>
+      <View style={styles.modalWindow}>{children}</View>
     </View>
   );
 };

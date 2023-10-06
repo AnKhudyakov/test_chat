@@ -1,11 +1,9 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { Message } from '../core/types';
 import { useAppSelector } from '../core/redux/hooks';
-import {
-  selectName,
-} from '../core/redux/slices/userSlice';
 import { selectSelectedMessage } from '../core/redux/slices/messageSlice';
+import { selectName } from '../core/redux/slices/userSlice';
+import { Message } from '../core/types';
 
 interface FlatListComponentProps {
   item: Message;
@@ -14,6 +12,7 @@ interface FlatListComponentProps {
 function MessageItem({ item }: FlatListComponentProps) {
   const name = useAppSelector(selectName);
   const selectedMessage = useAppSelector(selectSelectedMessage);
+  
   return (
     <View
       style={[
@@ -68,7 +67,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   name: {
-    whiteSpace: 'normal',
     fontWeight: 'bold',
     fontSize: 12,
   },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
 import {
@@ -21,7 +21,7 @@ function ExitConfirm() {
       socket?.disconnect();
     }
   };
-  
+
   return (
     <View>
       <Text style={styles.modalsubheading}>Log out from Chat?</Text>

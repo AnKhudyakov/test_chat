@@ -4,13 +4,11 @@ import { Chat } from '../../types';
 import type { RootState } from '../index';
 
 const initialState = {
-  chatList: [
-  ] as Chat[],
+  chatList: [] as Chat[],
   isShowModalDelete: false,
   selectedChat: null as Chat | null,
   isShowSearch: false,
-  filteredChatList: [
-  ] as Chat[],
+  filteredChatList: [] as Chat[],
 };
 
 const slice = createSlice({

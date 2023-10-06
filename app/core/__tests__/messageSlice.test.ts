@@ -1,12 +1,12 @@
 import reducer, {
-  setSelectedMessage,
-  setIsShowEditMessage,
-  setEditMessageModal,
-  setDeleteMessageModal,
-  selectSelectedMessage,
-  selectIsShowEditMessage,
   selectDeleteMessageModal,
   selectEditMessageModal,
+  selectIsShowEditMessage,
+  selectSelectedMessage,
+  setDeleteMessageModal,
+  setEditMessageModal,
+  setIsShowEditMessage,
+  setSelectedMessage,
 } from '../redux/slices/messageSlice';
 import { store } from '../redux/store';
 

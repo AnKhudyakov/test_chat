@@ -7,18 +7,23 @@ import {
   Text,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationScreenProp } from 'react-navigation';
-import { Socket } from 'socket.io-client';
 import { useAppDispatch, useAppSelector } from '../core/redux/hooks';
+import {
+  selectChatList,
+  selectFilteredChatList,
+  selectIsShowModalDelete,
+  selectSelectedChat,
+  setIsShowModalDelete,
+  setSelectedChat,
+} from '../core/redux/slices/chatSlice';
 import { selectName } from '../core/redux/slices/userSlice';
-import { connectSocket, getSocket } from '../core/services/socketApi';
+import { connectSocket } from '../core/services/socketApi';
 import { Chat } from '../core/types';
 import ChatItem from '../shared/ChatItem';
-import Modal from '../shared/Modal';
 import CreatedChat from '../shared/CreatedChat';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { selectChatList, selectFilteredChatList, selectIsShowModalDelete, selectSelectedChat, setIsShowModalDelete, setSelectedChat } from '../core/redux/slices/chatSlice';
+import Modal from '../shared/Modal';
 
 interface MainScreenProps {
   navigation: NavigationScreenProp<any, any>;
@@ -30,14 +35,11 @@ export default function MainScreen({ navigation }: MainScreenProps) {
   const chatList = useAppSelector(selectChatList);
   const selectedChat = useAppSelector(selectSelectedChat);
   const isShowModal = useAppSelector(selectIsShowModalDelete);
-
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const filteredChatList = useAppSelector(selectFilteredChatList);
   useEffect(() => {
-    connectSocket(name, dispatch);
-    setSocket(getSocket());
-  }, []);
+    if (name) connectSocket(name, dispatch);
+  }, [name]);
 
   useEffect(() => {
     dispatch(
@@ -49,19 +51,12 @@ export default function MainScreen({ navigation }: MainScreenProps) {
 
   useEffect(() => {
     if (selectedChat && !isShowModal) {
-      navigation.navigate('Chat', { chat: selectedChat, socket });
+      navigation.navigate('Chat', { chat: selectedChat });
     }
   }, [selectedChat]);
 
   const selectChat = (chat: Chat) => {
     dispatch(setSelectedChat(chat));
-  };
-
-  const onSwipe = (gestureName: string, item: Chat) => {
-    if (gestureName === 'SWIPE_RIGHT') {
-      dispatch(setIsShowModalDelete(true));
-      selectChat(item);
-    }
   };
 
   if (!name) {
@@ -92,28 +87,19 @@ export default function MainScreen({ navigation }: MainScreenProps) {
         <FlatList
           data={filteredChatList}
           renderItem={({ item }) => (
-            <GestureRecognizer
-              onSwipe={(direction) => onSwipe(direction, item)}
-              config={{
-                velocityThreshold: 0.3,
-                directionalOffsetThreshold: 80,
+            <Pressable
+              onPress={() => selectChat(item)}
+              onLongPress={() => {
+                if (item.author.name === name) {
+                  dispatch(setIsShowModalDelete(true));
+                  selectChat(item);
+                } else {
+                  Alert.alert('You can only delete your chat!');
+                }
               }}
-              style={{ flex: 1 }}
             >
-              <Pressable
-                onPress={() => selectChat(item)}
-                onLongPress={() => {
-                  if (item.author.name === name) {
-                    dispatch(setIsShowModalDelete(true));
-                    selectChat(item);
-                  } else {
-                    Alert.alert('You can only delete your chat!');
-                  }
-                }}
-              >
-                <ChatItem chat={item} selectedChat={selectedChat} />
-              </Pressable>
-            </GestureRecognizer>
+              <ChatItem chat={item} selectedChat={selectedChat} />
+            </Pressable>
           )}
           keyExtractor={(item) => item._id}
         />

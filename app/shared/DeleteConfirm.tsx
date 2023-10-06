@@ -2,12 +2,15 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAppDispatch } from '../core/redux/hooks';
 import {
+  setIsShowModalDelete,
+  setSelectedChat,
+} from '../core/redux/slices/chatSlice';
+import {
   setDeleteMessageModal,
   setIsShowEditMessage,
   setSelectedMessage,
 } from '../core/redux/slices/messageSlice';
 import { getSocket } from '../core/services/socketApi';
-import { setIsShowModalDelete, setSelectedChat } from '../core/redux/slices/chatSlice';
 
 type DeleteConfirmProps = {
   id: string | undefined;
