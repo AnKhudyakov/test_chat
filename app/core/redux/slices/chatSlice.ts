@@ -5,25 +5,11 @@ import type { RootState } from '../index';
 
 const initialState = {
   chatList: [
-    // {
-    //   author: { _id: '651d5ae03e4e548e20d5d950', name: 'Ted' },
-    //   createdAt: '2023-10-05T13:32:12.871Z',
-    //   messages: [{}],
-    //   name: 'Second',
-    //   _id: '651ebadc46bd716db553cc63',
-    // },
   ] as Chat[],
   isShowModalDelete: false,
   selectedChat: null as Chat | null,
   isShowSearch: false,
   filteredChatList: [
-    // {
-    //   author: { _id: '651d5ae03e4e548e20d5d950', name: 'Ted' },
-    //   createdAt: '2023-10-05T13:32:12.871Z',
-    //   messages: [{}],
-    //   name: 'Second',
-    //   _id: '651ebadc46bd716db553cc63',
-    // },
   ] as Chat[],
 };
 

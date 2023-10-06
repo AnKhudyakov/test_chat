@@ -124,11 +124,6 @@ export default function MainScreen({ navigation }: MainScreenProps) {
         ) : (
           <Pressable onPress={() => setVisible(true)} style={styles.container}>
             <View style={styles.buttonAdd}>
-              {/* <Text
-                style={{ fontSize: 24, textAlign: 'center' }}
-              >
-                +
-              </Text> */}
               <Icon name="plus" color={'black'} size={26} />
             </View>
           </Pressable>

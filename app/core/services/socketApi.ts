@@ -6,7 +6,6 @@ import { setChatsList } from '../redux/slices/chatSlice';
 let socket: Socket | null = null;
 
 export const connectSocket = (
-  // setSocket: Dispatch<React.SetStateAction<Socket | null>>,
   name: string,
   dispatch: AppDispatch
 ) => {
