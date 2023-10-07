@@ -1,10 +1,6 @@
 # Welcome to Chat app
 
-## Getting Started
-
-Go to page [Here](https://)
-
-### `Run the project on localhost`
+### `Run the project`
 
 1. Install dependencies for client
 ```sh
