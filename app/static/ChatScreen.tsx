@@ -90,8 +90,10 @@ function ChatScreen({ route }: ChatScreenProps) {
         renderItem={({ item }) => (
           <Pressable
             onLongPress={() => {
+              if (name === item.user.name){
               dispatch(setSelectedMessage(item));
               dispatch(setIsShowEditMessage(true));
+              }
             }}
           >
             <MessageItem item={item} />

@@ -18,7 +18,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/57a51804-4924-4a20-847e-369d5c837bad"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -26,13 +27,17 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-    },
+    "android": {},
     "web": {
       "favicon": "./assets/icon.png"
     },
     "runtimeVersion": {
       "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "57a51804-4924-4a20-847e-369d5c837bad"
+      }
     }
   }
 }
